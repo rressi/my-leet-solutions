@@ -15,31 +15,17 @@ class Solution:
             case 1:
                 return strs[0]
 
-        def _match_recursion(left: int, right: int) -> int:
-            if left >= right:
-                return left
+        def _common_prefix(str_a: str, str_b: str) -> str:
+            for i, (a, b) in enumerate(zip(str_a, str_b)):
+                if a != b:
+                    return str_a[:i]
+            return str_a
 
-            # Visit the left partition:
-            middle: int = left + (right - left) // 2
-            if left < middle:
-                match_len: int = _match_recursion(left, middle)
-                if match_len < middle:
-                    return match_len
-            
-            # Test the current column:
-            ref_ch: str = strs[0][middle]
-            if any(
-                ref_ch != strs[j][middle] 
-                for j in range(1, len(strs))
-            ):
-                return middle
-            
-            # Visit the right partition:
-            return _match_recursion(middle + 1, right)
-                
         min_len: int = min(len(s) for s in strs)
-        match_len: int = _match_recursion(0, min_len)
-        return strs[0][:match_len]
+        result: str = strs[0][:min_len]
+        for i in range(1, len(strs)):
+            result = _common_prefix(result, strs[i])
+        return result
 
 
 def test_solution():
