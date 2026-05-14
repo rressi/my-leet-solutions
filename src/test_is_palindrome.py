@@ -1,3 +1,12 @@
+"""
+Palindrome Number
+
+Determine whether an integer is a palindrome. An integer is a palindrome 
+when it reads the same backward as forward.
+
+Reference: https://leetcode.com/problems/palindrome-number/
+"""
+
 class Solution:
     def isPalindrome(self, x: int) -> bool:
         digits: str = str(x)
