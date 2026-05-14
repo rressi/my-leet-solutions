@@ -9,25 +9,40 @@ An input string is valid if:
 
 Reference: https://leetcode.com/problems/valid-parentheses/
 """
+class OpenPar:
+    pass
 
 class Solution:
-    def isValid(self, s: str) -> bool:
-        stack = []
-        for ch in s:
-            match ch:
-                case '(' | '[' | '{':
-                    stack.append(ch)
-                    continue
-            try:
-                match stack.pop() + ch:
-                    case '()' | '[]' | '{}':
-                        continue
-                    case _:
-                        return False
-            except IndexError:
-                return False
 
-        return len(stack) == 0
+    def __init__(self):
+        self.pairs = {
+            '(': OpenPar(),
+            '[': OpenPar(),
+            '{': OpenPar(),
+            ')': '(',
+            ']': '[',
+            '}': '{'
+        }
+
+    def isValid(self, s: str) -> bool:
+        stack: list[str] = []
+        for ch in s:
+            match self.pairs.get(ch):
+                case OpenPar():
+                     # Open parenthesis
+                    stack.append(ch)
+                case str(expected_peer):
+                    # Close parenthesis
+                    actual_peer: str = stack.pop() if stack else None
+                    if expected_peer != actual_peer:
+                        return False  # Mismatched closing parenthesis
+                case _:
+                    return False  # Invalid character
+            
+        if stack:
+            return False  # Unmatched opening brackets remain
+
+        return True
 
 
 def test_solution():
