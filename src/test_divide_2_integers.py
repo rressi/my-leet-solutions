@@ -9,37 +9,28 @@ Reerence: https://leetcode.com/problems/divide-two-integers/
 """
 
 
-MAX_INT = 2**31 - 1
-MIN_INT = -2**31
-
 class Solution:
     def divide(self, dividend: int, divisor: int) -> int:
-        sign = 1
-        if dividend < 0:
-            sign = -sign
-            dividend = -dividend
-        if divisor < 0:
-            sign = -sign
-            divisor = -divisor
+        negative: bool = (dividend < 0) != (divisor < 0)
+        dividend, divisor = abs(dividend), abs(divisor)
 
-        if dividend < divisor:
-            return 0
-
-        result: int = 1
-        accumulator: int = divisor
-
-        while (accumulator << 1) <= dividend:
-            accumulator = (accumulator << 1)
-            result = result << 1
-
-        while accumulator + divisor <= dividend:
-            accumulator += divisor
-            result += 1
-
-        if sign < 0:
-            result = -result
-
-        return min(max(result, MIN_INT), MAX_INT)
+        result = 0
+        while dividend >= divisor:
+            temp_divisor = divisor
+            num_divisors = 1
+            
+            # Trova il raddoppio più grande possibile per il resto attuale
+            while (temp_divisor << 1) <= dividend:
+                temp_divisor <<= 1
+                num_divisors <<= 1
+            
+            # Sottrai il "blocco" più grande trovato
+            dividend -= temp_divisor
+            result += num_divisors
+            
+        if negative:
+            return max(-result, -(1<<31))
+        return min(result, (1<<31)-1)
 
 
 def test_solution():
@@ -48,8 +39,8 @@ def test_solution():
     assert solution.divide(7, -3) == -2
     assert solution.divide(0, 1) == 0
     assert solution.divide(1, 1) == 1
-    assert solution.divide(-2147483648, -1) == MAX_INT
-    assert solution.divide(-2147483648, 1) == MIN_INT
+    assert solution.divide(-2147483648, -1) == 2147483647
+    assert solution.divide(-2147483648, 1) == -2147483648
 
 if __name__ == "__main__":
     test_solution()
